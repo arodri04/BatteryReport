@@ -1,0 +1,1 @@
+ pyinstaller --onefile -c 'report.py'
