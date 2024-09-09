@@ -1,42 +1,44 @@
 from bs4 import BeautifulSoup
 import os
 from subprocess import Popen
-import requests as req
 
+#Creating the battery report - using bash in config.bat
 p = Popen("config.bat", cwd=r".\\")
 stdout, stderr = p.communicate()
 
+#Opening up the battery report and assigning it to a variable
 HTMLfile = open('battery-report.html', 'r')
-
 index = HTMLfile.read()
 
+
+#Using beautifulsoup to grab information from HTML file
 S = BeautifulSoup(index, 'html.parser')
-divs = S.find_all("td")
-mwh = "mWh"
-count = 0
+tds = S.find_all("td")
 l1 = []
 
-for i in divs:
-
+#sticking the first 2 td's with mWh into a list
+for i in tds:
     if "mWh" in i.text:
-        count += 1
         l1.append(i.text)
-        if count == 2:
+        if len(l1) == 2:
             break
 
+#cleaning up and closing files
 HTMLfile.close()
 os.remove('battery-report.html')
 
+#Taking each integer and making it usable and printing them
 one = int(l1[0].replace(",", "").replace(" mWh", "").strip())
 two = int(l1[1].replace(",", "").replace(" mWh", "").strip())
 print(f'Design Capacity: {one}')
 print(f'Full Charge Capacity: {two}')
 
+#math to find the percentage of healthy battery Design Capacity/Full Charge
 total = int((two/one)*100)
 
-cmd = "echo '{}%'".format(total)
+#printing out the percentage of healthy battery. This time were using bash instead of print
+cmd = "echo {}%".format(total)
 os.system(cmd)
 os.system('pause')
 
 
-#pattern = r'(\d*,\d* mWH)'
