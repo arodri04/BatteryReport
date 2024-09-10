@@ -3,8 +3,12 @@ import os
 from subprocess import Popen
 
 #Creating the battery report - using bash in config.bat
-p = Popen("config.bat", cwd=r".\\")
-stdout, stderr = p.communicate()
+# p = Popen("config.bat", cwd=r".\\")
+# stdout, stderr = p.communicate()
+
+#reconstructed to not use batch file.
+create_report = 'powercfg /batteryreport'
+os.system(create_report)
 
 #Opening up the battery report and assigning it to a variable
 HTMLfile = open('battery-report.html', 'r')
